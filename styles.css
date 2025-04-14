@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    background-color: #fff; /* Đặt màu trắng cho toàn bộ body */
     margin: 0;
     padding: 20px;
 }
@@ -14,15 +14,15 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-    text-align: center;
-    color: #333;
-}
-
 .input-section {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    position: sticky; /* Cố định input section */
+    top: 0; /* Đặt ở đầu trang */
+    background: #fff; /* Nền trắng để khớp với body */
+    z-index: 1000; /* Đảm bảo nằm trên các phần tử khác */
+    padding: 10px 0; /* Thêm padding để đẹp hơn */
 }
 
 input {
