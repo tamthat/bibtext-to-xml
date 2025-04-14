@@ -148,7 +148,11 @@ function displayResult(data) {
     
     for (let [key, value] of Object.entries(data)) {
         const row = document.createElement('tr');
-        row.innerHTML = `<td>${key}</td><td>${value}</td>`;
+        if (key === "url") {
+            row.innerHTML = `<td>${key}</td><td><a href="${value}" style="text-decoration: none; color: inherit;">${value}</a></td>`;
+        } else {
+            row.innerHTML = `<td>${key}</td><td>${value}</td>`;
+        }
         table.appendChild(row);
     }
     
