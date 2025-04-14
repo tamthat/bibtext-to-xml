@@ -445,6 +445,7 @@ async function fetchBibTeX() {
 
 document.addEventListener('DOMContentLoaded', function() {
     const doiInput = document.getElementById('doiInput');
+    doiInput.focus();
     const fetchButton = document.getElementById('fetchButton'); // Assuming your button has the ID 'fetchButton'
 
     doiInput.addEventListener('keypress', function(event) {
