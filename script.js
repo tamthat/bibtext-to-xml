@@ -442,3 +442,15 @@ async function fetchBibTeX() {
         document.getElementById('xmlOutput').innerHTML = '';
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const doiInput = document.getElementById('doiInput');
+    const fetchButton = document.getElementById('fetchButton'); // Assuming your button has the ID 'fetchButton'
+
+    doiInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent the default action of Enter (like submitting a form)
+            fetchButton.click(); // Programmatically click the button
+        }
+    });
+});
