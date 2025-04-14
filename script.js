@@ -114,16 +114,250 @@ function bibTeXToXML(data) {
         editorName = editorName.split(' and ')[0].trim();
     }
     
+    // Hàm hỗ trợ để thêm thẻ XML chỉ khi giá trị tồn tại và không rỗng
+    const addTagIfValue = (tagName, value) => {
+        if (value !== undefined && value !== null && value !== '') {
+            return `<${tagName}>${value}</${tagName}>`;
+        }
+        return '';
+    };
+    
     // Hàm tạo XML cho từng loại
     const xmlTemplates = {
-        Book: () => `<b:Source><b:Tag>${data.key || 'Unknown'}</b:Tag><b:SourceType>Book</b:SourceType><b:Guid>{${generateGUID().toUpperCase()}}</b:Guid><b:Title>${data.title || ''}</b:Title><b:Year>${data.year || ''}</b:Year><b:City>${data.address || ''}</b:City><b:Publisher>${data.publisher || ''}</b:Publisher><b:StateProvince>${data.state || ''}</b:StateProvince><b:CountryRegion>${data.country || ''}</b:CountryRegion><b:Volume>${data.volume || ''}</b:Volume><b:NumberVolumes>${data.number || ''}</b:NumberVolumes><b:ShortTitle>${data.shorttitle || ''}</b:ShortTitle><b:StandardNumber>${data.isbn || data.issn || ''}</b:StandardNumber><b:Pages>${(data.pages || '').replace('–', '-')}</b:Pages><b:Edition>${data.edition || ''}</b:Edition><b:Comments>${data.note || ''}</b:Comments><b:Medium>${data.medium || ''}</b:Medium><b:YearAccessed>${data.yearaccessed || ''}</b:YearAccessed><b:MonthAccessed>${data.monthaccessed || ''}</b:MonthAccessed><b:DayAccessed>${data.dayaccessed || ''}</b:DayAccessed><b:DOI>${data.doi || ''}</b:DOI><b:Author><b:Author><b:NameList><b:Person><b:Last>${lastName}</b:Last></b:Person></b:NameList></b:Author><b:Editor><b:NameList><b:Person><b:Last>${editorName}</b:Last></b:Person></b:NameList></b:Editor><b:Translator><b:NameList><b:Person><b:Last>${data.translator || ''}</b:Last></b:Person></b:NameList></b:Translator></b:Author></b:Source>`,
-        BookSection: () => `<b:Source><b:Tag>${data.key || 'Unknown'}</b:Tag><b:SourceType>BookSection</b:SourceType><b:Guid>{${generateGUID().toUpperCase()}}</b:Guid><b:Title>${data.title || ''}</b:Title><b:Year>${data.year || ''}</b:Year><b:City>${data.address || ''}</b:City><b:Publisher>${data.publisher || ''}</b:Publisher><b:BookTitle>${data.booktitle || ''}</b:BookTitle><b:Pages>${(data.pages || '').replace('–', '-')}</b:Pages><b:StateProvince>${data.state || ''}</b:StateProvince><b:CountryRegion>${data.country || ''}</b:CountryRegion><b:Volume>${data.volume || ''}</b:Volume><b:NumberVolumes>${data.number || ''}</b:NumberVolumes><b:ChapterNumber>${data.chapter || ''}</b:ChapterNumber><b:ShortTitle>${data.shorttitle || ''}</b:ShortTitle><b:StandardNumber>${data.isbn || data.issn || ''}</b:StandardNumber><b:Edition>${data.edition || ''}</b:Edition><b:Comments>${data.note || ''}</b:Comments><b:Medium>${data.medium || ''}</b:Medium><b:YearAccessed>${data.yearaccessed || ''}</b:YearAccessed><b:MonthAccessed>${data.monthaccessed || ''}</b:MonthAccessed><b:DayAccessed>${data.dayaccessed || ''}</b:DayAccessed><b:DOI>${data.doi || ''}</b:DOI><b:Author><b:Author><b:NameList><b:Person><b:Last>${lastName}</b:Last></b:Person></b:NameList></b:Author><b:BookAuthor><b:NameList><b:Person><b:Last>${data.bookauthor || lastName}</b:Last></b:Person></b:NameList></b:BookAuthor><b:Editor><b:NameList><b:Person><b:Last>${editorName}</b:Last></b:Person></b:NameList></b:Editor><b:Translator><b:NameList><b:Person><b:Last>${data.translator || ''}</b:Last></b:Person></b:NameList></b:Translator></b:Author></b:Source>`,
-        JournalArticle: () => `<b:Source><b:Tag>${data.key || 'Unknown'}</b:Tag><b:SourceType>JournalArticle</b:SourceType><b:Guid>{${generateGUID().toUpperCase()}}</b:Guid><b:Title>${data.title || ''}</b:Title><b:Year>${data.year || ''}</b:Year><b:Pages>${(data.pages || '').replace('–', '-')}</b:Pages><b:City>${data.address || ''}</b:City><b:Publisher>${data.publisher || ''}</b:Publisher><b:JournalName>${data.journal || ''}</b:JournalName><b:Volume>${data.volume || ''}</b:Volume><b:Issue>${data.number || ''}</b:Issue><b:ShortTitle>${data.shorttitle || ''}</b:ShortTitle><b:StandardNumber>${data.issn || ''}</b:StandardNumber><b:Comments>${data.note || ''}</b:Comments><b:Medium>${data.medium || ''}</b:Medium><b:YearAccessed>${data.yearaccessed || ''}</b:YearAccessed><b:MonthAccessed>${data.monthaccessed || ''}</b:MonthAccessed><b:DayAccessed>${data.dayaccessed || ''}</b:DayAccessed><b:DOI>${data.doi || ''}</b:DOI><b:Author><b:Author><b:NameList><b:Person><b:Last>${lastName}</b:Last></b:Person></b:NameList></b:Author><b:Editor><b:NameList><b:Person><b:Last>${editorName}</b:Last></b:Person></b:NameList></b:Editor></b:Author></b:Source>`,
-        ArticleInAPeriodical: () => `<b:Source><b:Tag>${data.key || 'Unknown'}</b:Tag><b:SourceType>ArticleInAPeriodical</b:SourceType><b:Guid>{${generateGUID().toUpperCase()}}</b:Guid><b:Title>${data.title || ''}</b:Title><b:Year>${data.year || ''}</b:Year><b:Pages>${(data.pages || '').replace('–', '-')}</b:Pages><b:PeriodicalTitle>${data.journal || ''}</b:PeriodicalTitle><b:Author><b:Author><b:NameList><b:Person><b:Last>${lastName}</b:Last></b:Person></b:NameList></b:Author><b:Editor><b:NameList><b:Person><b:Last>${editorName}</b:Last></b:Person></b:NameList></b:Editor></b:Author><b:City>${data.address || ''}</b:City><b:Publisher>${data.publisher || ''}</b:Publisher><b:Edition>${data.edition || ''}</b:Edition><b:Volume>${data.volume || ''}</b:Volume><b:Issue>${data.number || ''}</b:Issue><b:ShortTitle>${data.shorttitle || ''}</b:ShortTitle><b:StandardNumber>${data.issn || ''}</b:StandardNumber><b:Comments>${data.note || ''}</b:Comments><b:Medium>${data.medium || ''}</b:Medium><b:YearAccessed>${data.yearaccessed || ''}</b:YearAccessed><b:MonthAccessed>${data.monthaccessed || ''}</b:MonthAccessed><b:DayAccessed>${data.dayaccessed || ''}</b:DayAccessed><b:DOI>${data.doi || ''}</b:DOI></b:Source>`,
-        ConferenceProceedings: () => `<b:Source><b:Tag>${data.key || 'Unknown'}</b:Tag><b:SourceType>ConferenceProceedings</b:SourceType><b:Guid>{${generateGUID().toUpperCase()}}</b:Guid><b:Title>${data.title || ''}</b:Title><b:Year>${data.year || ''}</b:Year><b:Pages>${(data.pages || '').replace('–', '-')}</b:Pages><b:ConferenceName>${data.booktitle || ''}</b:ConferenceName><b:City>${data.address || ''}</b:City><b:Publisher>${data.publisher || ''}</b:Publisher><b:Author><b:Author><b:NameList><b:Person><b:Last>${lastName}</b:Last></b:Person></b:NameList></b:Author><b:Editor><b:NameList><b:Person><b:Last>${editorName}</b:Last></b:Person></b:NameList></b:Editor></b:Author><b:Volume>${data.volume || ''}</b:Volume><b:ShortTitle>${data.shorttitle || ''}</b:ShortTitle><b:StandardNumber>${data.isbn || data.issn || ''}</b:StandardNumber><b:Comments>${data.note || ''}</b:Comments><b:Medium>${data.medium || ''}</b:Medium><b:YearAccessed>${data.yearaccessed || ''}</b:YearAccessed><b:MonthAccessed>${data.monthaccessed || ''}</b:MonthAccessed><b:DayAccessed>${data.dayaccessed || ''}</b:DayAccessed><b:DOI>${data.doi || ''}</b:DOI></b:Source>`,
-        Report: () => `<b:Source><b:Tag>${data.key || 'Unknown'}</b:Tag><b:SourceType>Report</b:SourceType><b:Guid>{${generateGUID().toUpperCase()}}</b:Guid><b:Title>${data.title || ''}</b:Title><b:Pages>${(data.pages || '').replace('–', '-')}</b:Pages><b:Year>${data.year || ''}</b:Year><b:City>${data.address || ''}</b:City><b:Publisher>${data.publisher || ''}</b:Publisher><b:Author><b:Author><b:NameList><b:Person><b:Last>${lastName}</b:Last></b:Person></b:NameList></b:Author></b:Author><b:Department>${data.department || ''}</b:Department><b:Institution>${data.school || data.institution || ''}</b:Institution><b:ThesisType>${data.thesistype || 'PhD thesis'}</b:ThesisType><b:ShortTitle>${data.shorttitle || ''}</b:ShortTitle><b:StandardNumber>${data.issn || ''}</b:StandardNumber><b:Comments>${data.note || ''}</b:Comments><b:Medium>${data.medium || ''}</b:Medium><b:YearAccessed>${data.yearaccessed || ''}</b:YearAccessed><b:MonthAccessed>${data.monthaccessed || ''}</b:MonthAccessed><b:DayAccessed>${data.dayaccessed || ''}</b:DayAccessed><b:DOI>${data.doi || ''}</b:DOI></b:Source>`,
-        InternetSite: () => `<b:Source><b:Tag>${data.key || 'Unknown'}</b:Tag><b:SourceType>InternetSite</b:SourceType><b:Guid>{${generateGUID().toUpperCase()}}</b:Guid><b:Title>${data.title || ''}</b:Title><b:Year>${data.year || ''}</b:Year><b:Author><b:Author><b:NameList><b:Person><b:Last>${lastName}</b:Last></b:Person></b:NameList></b:Author><b:Editor><b:NameList><b:Person><b:Last>${editorName}</b:Last></b:Person></b:NameList></b:Editor><b:ProducerName><b:NameList><b:Person><b:Last>${data.producer || ''}</b:Last></b:Person></b:NameList></b:ProducerName></b:Author><b:InternetSiteTitle>${data.journal || data.website || ''}</b:InternetSiteTitle><b:ProductionCompany>${data.publisher || ''}</b:ProductionCompany><b:YearAccessed>${data.yearaccessed || ''}</b:YearAccessed><b:MonthAccessed>${data.monthaccessed || ''}</b:MonthAccessed><b:DayAccessed>${data.dayaccessed || ''}</b:DayAccessed><b:Version>${data.version || ''}</b:Version><b:ShortTitle>${data.shorttitle || ''}</b:ShortTitle><b:StandardNumber>${data.issn || ''}</b:StandardNumber><b:Comments>${data.note || ''}</b:Comments><b:Medium>${data.medium || ''}</b:Medium><b:DOI>${data.doi || ''}</b:DOI></b:Source>`,
-        Misc: () => `<b:Source><b:Tag>${data.key || 'Unknown'}</b:Tag><b:SourceType>Misc</b:SourceType><b:Guid>{${generateGUID().toUpperCase()}}</b:Guid><b:Title>${data.title || ''}</b:Title><b:Year>${data.year || ''}</b:Year><b:YearAccessed>${data.yearaccessed || ''}</b:YearAccessed><b:MonthAccessed>${data.monthaccessed || ''}</b:MonthAccessed><b:DayAccessed>${data.dayaccessed || ''}</b:DayAccessed><b:ShortTitle>${data.shorttitle || ''}</b:ShortTitle><b:StandardNumber>${data.issn || data.isbn || ''}</b:StandardNumber><b:Comments>${data.note || ''}</b:Comments><b:Medium>${data.medium || ''}</b:Medium><b:DOI>${data.doi || ''}</b:DOI><b:Author><b:Author><b:NameList><b:Person><b:Last>${lastName}</b:Last></b:Person></b:NameList></b:Author><b:Editor><b:NameList><b:Person><b:Last>${editorName}</b:Last></b:Person></b:NameList></b:Editor><b:Translator><b:NameList><b:Person><b:Last>${data.translator || ''}</b:Last></b:Person></b:NameList></b:Translator><b:Compiler><b:NameList><b:Person><b:Last>${data.compiler || ''}</b:Last></b:Person></b:NameList></b:Compiler></b:Author><b:PublicationTitle>${data.journal || data.booktitle || ''}</b:PublicationTitle><b:City>${data.address || ''}</b:City><b:StateProvince>${data.state || ''}</b:StateProvince><b:CountryRegion>${data.country || ''}</b:CountryRegion><b:Publisher>${data.publisher || ''}</b:Publisher><b:Pages>${(data.pages || '').replace('–', '-')}</b:Pages><b:Volume>${data.volume || ''}</b:Volume><b:Edition>${data.edition || ''}</b:Edition><b:Issue>${data.number || ''}</b:Issue></b:Source>`
+        Book: () => {
+            const pages = (data.pages || '').replace('–', '-');
+            return `<b:Source>` +
+                `<b:Tag>${data.key || 'Unknown'}</b:Tag>` +
+                `<b:SourceType>Book</b:SourceType>` +
+                `<b:Guid>{${generateGUID().toUpperCase()}}</b:Guid>` +
+                addTagIfValue('b:Title', data.title) +
+                addTagIfValue('b:Year', data.year) +
+                addTagIfValue('b:City', data.address) +
+                addTagIfValue('b:Publisher', data.publisher) +
+                addTagIfValue('b:StateProvince', data.state) +
+                addTagIfValue('b:CountryRegion', data.country) +
+                addTagIfValue('b:Volume', data.volume) +
+                addTagIfValue('b:NumberVolumes', data.number) +
+                addTagIfValue('b:ShortTitle', data.shorttitle) +
+                addTagIfValue('b:StandardNumber', data.isbn || data.issn) +
+                addTagIfValue('b:Pages', pages) +
+                addTagIfValue('b:Edition', data.edition) +
+                addTagIfValue('b:Comments', data.note) +
+                addTagIfValue('b:Medium', data.medium) +
+                addTagIfValue('b:YearAccessed', data.yearaccessed) +
+                addTagIfValue('b:MonthAccessed', data.monthaccessed) +
+                addTagIfValue('b:DayAccessed', data.dayaccessed) +
+                addTagIfValue('b:DOI', data.doi) +
+                `<b:Author>` +
+                `<b:Author><b:NameList><b:Person><b:Last>${lastName || ''}</b:Last></b:Person></b:NameList></b:Author>` +
+                `<b:Editor><b:NameList><b:Person><b:Last>${editorName || ''}</b:Last></b:Person></b:NameList></b:Editor>` +
+                addTagIfValue('b:Translator', data.translator, `<b:Translator><b:NameList><b:Person><b:Last>${data.translator}</b:Last></b:Person></b:NameList></b:Translator>`) +
+                `</b:Author>` +
+                `</b:Source>`;
+        },
+        BookSection: () => {
+            const pages = (data.pages || '').replace('–', '-');
+            return `<b:Source>` +
+                `<b:Tag>${data.key || 'Unknown'}</b:Tag>` +
+                `<b:SourceType>BookSection</b:SourceType>` +
+                `<b:Guid>{${generateGUID().toUpperCase()}}</b:Guid>` +
+                addTagIfValue('b:Title', data.title) +
+                addTagIfValue('b:Year', data.year) +
+                addTagIfValue('b:City', data.address) +
+                addTagIfValue('b:Publisher', data.publisher) +
+                addTagIfValue('b:BookTitle', data.booktitle) +
+                addTagIfValue('b:Pages', pages) +
+                addTagIfValue('b:StateProvince', data.state) +
+                addTagIfValue('b:CountryRegion', data.country) +
+                addTagIfValue('b:Volume', data.volume) +
+                addTagIfValue('b:NumberVolumes', data.number) +
+                addTagIfValue('b:ChapterNumber', data.chapter) +
+                addTagIfValue('b:ShortTitle', data.shorttitle) +
+                addTagIfValue('b:StandardNumber', data.isbn || data.issn) +
+                addTagIfValue('b:Edition', data.edition) +
+                addTagIfValue('b:Comments', data.note) +
+                addTagIfValue('b:Medium', data.medium) +
+                addTagIfValue('b:YearAccessed', data.yearaccessed) +
+                addTagIfValue('b:MonthAccessed', data.monthaccessed) +
+                addTagIfValue('b:DayAccessed', data.dayaccessed) +
+                addTagIfValue('b:DOI', data.doi) +
+                `<b:Author>` +
+                `<b:Author><b:NameList><b:Person><b:Last>${lastName || ''}</b:Last></b:Person></b:NameList></b:Author>` +
+                addTagIfValue('b:BookAuthor', data.bookauthor, `<b:BookAuthor><b:NameList><b:Person><b:Last>${data.bookauthor}</b:Last></b:Person></b:NameList></b:BookAuthor>`) +
+                `<b:Editor><b:NameList><b:Person><b:Last>${editorName || ''}</b:Last></b:Person></b:NameList></b:Editor>` +
+                addTagIfValue('b:Translator', data.translator, `<b:Translator><b:NameList><b:Person><b:Last>${data.translator}</b:Last></b:Person></b:NameList></b:Translator>`) +
+                `</b:Author>` +
+                `</b:Source>`;
+        },
+        JournalArticle: () => {
+            const pages = (data.pages || '').replace('–', '-');
+            return `<b:Source>` +
+                `<b:Tag>${data.key || 'Unknown'}</b:Tag>` +
+                `<b:SourceType>JournalArticle</b:SourceType>` +
+                `<b:Guid>{${generateGUID().toUpperCase()}}</b:Guid>` +
+                addTagIfValue('b:Title', data.title) +
+                addTagIfValue('b:Year', data.year) +
+                addTagIfValue('b:Pages', pages) +
+                addTagIfValue('b:City', data.address) +
+                addTagIfValue('b:Publisher', data.publisher) +
+                addTagIfValue('b:JournalName', data.journal) +
+                addTagIfValue('b:Volume', data.volume) +
+                addTagIfValue('b:Issue', data.number) +
+                addTagIfValue('b:ShortTitle', data.shorttitle) +
+                addTagIfValue('b:StandardNumber', data.issn) +
+                addTagIfValue('b:Comments', data.note) +
+                addTagIfValue('b:Medium', data.medium) +
+                addTagIfValue('b:YearAccessed', data.yearaccessed) +
+                addTagIfValue('b:MonthAccessed', data.monthaccessed) +
+                addTagIfValue('b:DayAccessed', data.dayaccessed) +
+                addTagIfValue('b:DOI', data.doi) +
+                `<b:Author>` +
+                `<b:Author><b:NameList><b:Person><b:Last>${lastName || ''}</b:Last></b:Person></b:NameList></b:Author>` +
+                `<b:Editor><b:NameList><b:Person><b:Last>${editorName || ''}</b:Last></b:Person></b:NameList></b:Editor>` +
+                `</b:Author>` +
+                `</b:Source>`;
+        },
+        ArticleInAPeriodical: () => {
+            const pages = (data.pages || '').replace('–', '-');
+            return `<b:Source>` +
+                `<b:Tag>${data.key || 'Unknown'}</b:Tag>` +
+                `<b:SourceType>ArticleInAPeriodical</b:SourceType>` +
+                `<b:Guid>{${generateGUID().toUpperCase()}}</b:Guid>` +
+                addTagIfValue('b:Title', data.title) +
+                addTagIfValue('b:Year', data.year) +
+                addTagIfValue('b:Pages', pages) +
+                addTagIfValue('b:PeriodicalTitle', data.journal) +
+                addTagIfValue('b:City', data.address) +
+                addTagIfValue('b:Publisher', data.publisher) +
+                addTagIfValue('b:Edition', data.edition) +
+                addTagIfValue('b:Volume', data.volume) +
+                addTagIfValue('b:Issue', data.number) +
+                addTagIfValue('b:ShortTitle', data.shorttitle) +
+                addTagIfValue('b:StandardNumber', data.issn) +
+                addTagIfValue('b:Comments', data.note) +
+                addTagIfValue('b:Medium', data.medium) +
+                addTagIfValue('b:YearAccessed', data.yearaccessed) +
+                addTagIfValue('b:MonthAccessed', data.monthaccessed) +
+                addTagIfValue('b:DayAccessed', data.dayaccessed) +
+                addTagIfValue('b:DOI', data.doi) +
+                `<b:Author>` +
+                `<b:Author><b:NameList><b:Person><b:Last>${lastName || ''}</b:Last></b:Person></b:NameList></b:Author>` +
+                `<b:Editor><b:NameList><b:Person><b:Last>${editorName || ''}</b:Last></b:Person></b:NameList></b:Editor>` +
+                `</b:Author>` +
+                `</b:Source>`;
+        },
+        ConferenceProceedings: () => {
+            const pages = (data.pages || '').replace('–', '-');
+            return `<b:Source>` +
+                `<b:Tag>${data.key || 'Unknown'}</b:Tag>` +
+                `<b:SourceType>ConferenceProceedings</b:SourceType>` +
+                `<b:Guid>{${generateGUID().toUpperCase()}}</b:Guid>` +
+                addTagIfValue('b:Title', data.title) +
+                addTagIfValue('b:Year', data.year) +
+                addTagIfValue('b:Pages', pages) +
+                addTagIfValue('b:ConferenceName', data.booktitle) +
+                addTagIfValue('b:City', data.address) +
+                addTagIfValue('b:Publisher', data.publisher) +
+                addTagIfValue('b:Volume', data.volume) +
+                addTagIfValue('b:ShortTitle', data.shorttitle) +
+                addTagIfValue('b:StandardNumber', data.isbn || data.issn) +
+                addTagIfValue('b:Comments', data.note) +
+                addTagIfValue('b:Medium', data.medium) +
+                addTagIfValue('b:YearAccessed', data.yearaccessed) +
+                addTagIfValue('b:MonthAccessed', data.monthaccessed) +
+                addTagIfValue('b:DayAccessed', data.dayaccessed) +
+                addTagIfValue('b:DOI', data.doi) +
+                `<b:Author>` +
+                `<b:Author><b:NameList><b:Person><b:Last>${lastName || ''}</b:Last></b:Person></b:NameList></b:Author>` +
+                `<b:Editor><b:NameList><b:Person><b:Last>${editorName || ''}</b:Last></b:Person></b:NameList></b:Editor>` +
+                `</b:Author>` +
+                `</b:Source>`;
+        },
+        Report: () => {
+            const pages = (data.pages || '').replace('–', '-');
+            return `<b:Source>` +
+                `<b:Tag>${data.key || 'Unknown'}</b:Tag>` +
+                `<b:SourceType>Report</b:SourceType>` +
+                `<b:Guid>{${generateGUID().toUpperCase()}}</b:Guid>` +
+                addTagIfValue('b:Title', data.title) +
+                addTagIfValue('b:Pages', pages) +
+                addTagIfValue('b:Year', data.year) +
+                addTagIfValue('b:City', data.address) +
+                addTagIfValue('b:Publisher', data.publisher) +
+                addTagIfValue('b:Department', data.department) +
+                addTagIfValue('b:Institution', data.school || data.institution) +
+                addTagIfValue('b:ThesisType', data.thesistype || 'PhD thesis') +
+                addTagIfValue('b:ShortTitle', data.shorttitle) +
+                addTagIfValue('b:StandardNumber', data.issn) +
+                addTagIfValue('b:Comments', data.note) +
+                addTagIfValue('b:Medium', data.medium) +
+                addTagIfValue('b:YearAccessed', data.yearaccessed) +
+                addTagIfValue('b:MonthAccessed', data.monthaccessed) +
+                addTagIfValue('b:DayAccessed', data.dayaccessed) +
+                addTagIfValue('b:DOI', data.doi) +
+                `<b:Author>` +
+                `<b:Author><b:NameList><b:Person><b:Last>${lastName || ''}</b:Last></b:Person></b:NameList></b:Author>` +
+                `</b:Author>` +
+                `</b:Source>`;
+        },
+        InternetSite: () => {
+            return `<b:Source>` +
+                `<b:Tag>${data.key || 'Unknown'}</b:Tag>` +
+                `<b:SourceType>InternetSite</b:SourceType>` +
+                `<b:Guid>{${generateGUID().toUpperCase()}}</b:Guid>` +
+                addTagIfValue('b:Title', data.title) +
+                addTagIfValue('b:Year', data.year) +
+                addTagIfValue('b:InternetSiteTitle', data.journal || data.website) +
+                addTagIfValue('b:ProductionCompany', data.publisher) +
+                addTagIfValue('b:YearAccessed', data.yearaccessed) +
+                addTagIfValue('b:MonthAccessed', data.monthaccessed) +
+                addTagIfValue('b:DayAccessed', data.dayaccessed) +
+                addTagIfValue('b:Version', data.version) +
+                addTagIfValue('b:ShortTitle', data.shorttitle) +
+                addTagIfValue('b:StandardNumber', data.issn) +
+                addTagIfValue('b:Comments', data.note) +
+                addTagIfValue('b:Medium', data.medium) +
+                addTagIfValue('b:DOI', data.doi) +
+                `<b:Author>` +
+                `<b:Author><b:NameList><b:Person><b:Last>${lastName || ''}</b:Last></b:Person></b:NameList></b:Author>` +
+                `<b:Editor><b:NameList><b:Person><b:Last>${editorName || ''}</b:Last></b:Person></b:NameList></b:Editor>` +
+                addTagIfValue('b:ProducerName', data.producer, `<b:ProducerName><b:NameList><b:Person><b:Last>${data.producer}</b:Last></b:Person></b:NameList></b:ProducerName>`) +
+                `</b:Author>` +
+                `</b:Source>`;
+        },
+        Misc: () => {
+            const pages = (data.pages || '').replace('–', '-');
+            return `<b:Source>` +
+                `<b:Tag>${data.key || 'Unknown'}</b:Tag>` +
+                `<b:SourceType>Misc</b:SourceType>` +
+                `<b:Guid>{${generateGUID().toUpperCase()}}</b:Guid>` +
+                addTagIfValue('b:Title', data.title) +
+                addTagIfValue('b:Year', data.year) +
+                addTagIfValue('b:YearAccessed', data.yearaccessed) +
+                addTagIfValue('b:MonthAccessed', data.monthaccessed) +
+                addTagIfValue('b:DayAccessed', data.dayaccessed) +
+                addTagIfValue('b:ShortTitle', data.shorttitle) +
+                addTagIfValue('b:StandardNumber', data.issn || data.isbn) +
+                addTagIfValue('b:Comments', data.note) +
+                addTagIfValue('b:Medium', data.medium) +
+                addTagIfValue('b:DOI', data.doi) +
+                addTagIfValue('b:PublicationTitle', data.journal || data.booktitle) +
+                addTagIfValue('b:City', data.address) +
+                addTagIfValue('b:StateProvince', data.state) +
+                addTagIfValue('b:CountryRegion', data.country) +
+                addTagIfValue('b:Publisher', data.publisher) +
+                addTagIfValue('b:Pages', pages) +
+                addTagIfValue('b:Volume', data.volume) +
+                addTagIfValue('b:Edition', data.edition) +
+                addTagIfValue('b:Issue', data.number) +
+                `<b:Author>` +
+                `<b:Author><b:NameList><b:Person><b:Last>${lastName || ''}</b:Last></b:Person></b:NameList></b:Author>` +
+                `<b:Editor><b:NameList><b:Person><b:Last>${editorName || ''}</b:Last></b:Person></b:NameList></b:Editor>` +
+                addTagIfValue('b:Translator', data.translator, `<b:Translator><b:NameList><b:Person><b:Last>${data.translator}</b:Last></b:Person></b:NameList></b:Translator>`) +
+                addTagIfValue('b:Compiler', data.compiler, `<b:Compiler><b:NameList><b:Person><b:Last>${data.compiler}</b:Last></b:Person></b:NameList></b:Compiler>`) +
+                `</b:Author>` +
+                `</b:Source>`;
+        }
     };
     
     return xmlTemplates[sourceType] ? xmlTemplates[sourceType]() : xmlTemplates.Misc();
