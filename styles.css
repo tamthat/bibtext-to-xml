@@ -1,98 +1,26 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #fff; /* Đặt màu trắng cho toàn bộ body */
-    margin: 0;
-    padding: 20px;
+#doiInput {
+    margin-right: 5px;
 }
 
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.form-input {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1000;
+    /* border-bottom: 1px solid #ccc; */
+    padding: 10px 0;
 }
 
-.input-section {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    position: sticky; /* Cố định input section */
-    top: 0; /* Đặt ở đầu trang */
-    background: #fff; /* Nền trắng để khớp với body */
-    z-index: 1000; /* Đảm bảo nằm trên các phần tử khác */
-    padding: 10px 0; /* Thêm padding để đẹp hơn */
-}
-
-input {
-    flex: 1;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-.result {
-    margin-top: 20px;
-}
-
-.result-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-.result-table th,
-.result-table td {
-    padding: 10px;
-    border: 1px solid #ddd;
+td,
+th,
+tr {
     text-align: left;
 }
 
-.result-table th {
-    background-color: #f8f9fa;
-    font-weight: bold;
-}
-
-.result-table td {
-    background-color: #fff;
-}
-
-.error {
-    color: red;
-    font-weight: bold;
-    text-align: center;
-}
-
-.xml-output {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #f8f9fa;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-family: 'Courier New', Courier, monospace;
+.xml-output pre {
     white-space: pre-wrap;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.xml-output h3 {
-    margin: 0 0 10px 0;
-    color: #333;
-    font-family: Arial, sans-serif;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    text-align: justify;
 }

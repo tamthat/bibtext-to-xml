@@ -374,21 +374,23 @@ function displayResult(data) {
     }
     
     const table = document.createElement('table');
-    table.className = 'result-table';
+    table.className = 'table table-hover';
     
-    const headerRow = document.createElement('tr');
-    headerRow.innerHTML = '<th>Key</th><th>Value</th>';
+    const headerRow = document.createElement('thead');
+    headerRow.innerHTML = '<tr><th>Key</th><th>Value</th></tr>';
     table.appendChild(headerRow);
+    const bodyRow = document.createElement('tbody');
     
     for (let [key, value] of Object.entries(data)) {
         const row = document.createElement('tr');
         if (key === "url") {
-            row.innerHTML = `<td>${key}</td><td><a href="${value}" style="text-decoration: none; color: inherit;">${value}</a></td>`;
+            row.innerHTML = `<td>${key}</td><td><a href="${value}" style="text-decoration: none; color: inherit; padding:0px">${value}</a></td>`;
         } else {
             row.innerHTML = `<td>${key}</td><td>${value}</td>`;
         }
-        table.appendChild(row);
+        bodyRow.appendChild(row);
     }
+    table.appendChild(bodyRow);
     
     resultDiv.appendChild(table);
     
