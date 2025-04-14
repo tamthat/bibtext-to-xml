@@ -384,7 +384,7 @@ function displayResult(data) {
     for (let [key, value] of Object.entries(data)) {
         const row = document.createElement('tr');
         if (key === "url") {
-            row.innerHTML = `<td>${key}</td><td><a href="${value}" style="text-decoration: none; color: inherit; padding:0px">${value}</a></td>`;
+            row.innerHTML = `<td>${key}</td><td><a href="${value}" target="_blank" style="text-decoration: none; color: inherit; padding:0px">${value}</a></td>`;
         } else {
             row.innerHTML = `<td>${key}</td><td>${value}</td>`;
         }
