@@ -402,6 +402,10 @@ function displayResult(data) {
     xmlHeader.textContent = 'XML Output';
     xmlDiv.appendChild(xmlHeader);
     
+    const xmlNote = document.createElement('p')
+    xmlNote.innerHTML = '<i>%appdata%\\Microsoft\\Bibliography\\Sources.xml</i>'
+    xmlDiv.appendChild(xmlNote);
+    
     const xmlContent = document.createElement('pre');
     xmlContent.textContent = bibTeXToXML(data);
     xmlDiv.appendChild(xmlContent);
